@@ -1,0 +1,123 @@
+html, body {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+ }
+ 
+ body {
+    background-color: #7B8CDE;
+ }
+
+#keyboard {
+    height: 50%;
+    width: 100%;
+    z-index: 1;
+    bottom: 0px;
+    margin: 0px;
+    padding: 0px;
+    position: absolute;
+}
+
+#input {
+    height: calc(50% - 16px);
+    width: calc(100% - 16px);
+    margin: 0px;
+    position: absolute;
+    text-align: left;
+}
+
+#inputContent {
+    transform: translateY(calc(25vh - 50%));
+    margin: 16px;
+}
+
+#enterKey {
+    width: 64px;
+    font-size: 20px;   
+    /*transform: translateY(-8px);*/
+    padding-top: 10px;
+}
+
+#capsKey {
+    width: 64px;
+    font-size: 20px;
+    /*transform: translateY(-8px);*/
+    padding-top: 10px;
+}
+
+#backspaceKey {
+    width: 128px;
+    font-size: 20px;
+    /*transform: translateY(-8px);*/
+    padding-top: 10px;
+}
+
+.keyrow {
+    text-align: center;
+    float: none;
+    max-height: 32px;
+    padding: 0px;
+    margin: 8px;
+}
+
+label {
+    float: none;
+    display: inline-block;
+    color: white;
+    font-family: 'Arial';
+    border-radius: 10px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+label.input {
+    position: relative;
+    float: left;
+    font-size: 28px;
+    height: 32px;
+    padding: 8px;
+    margin: 0px;
+    text-align: center;
+}
+
+label.draggable {
+    background-color: white;
+    color: black;
+    text-align: center;
+    font-size: 28px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+}
+
+label.notDraggable {
+    background-color: #9999C3;
+    color: black;
+    text-align: center;
+    font-size: 28px;
+    z-index: 2;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+}
+
+label.dragged {
+    position: relative;
+    background-color: #9999C3;
+    color: #9999C3;
+    text-align: center;
+    font-size: 28px;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    margin: 2px;
+}
+
+div.keyrow {
+    padding: 8px;
+}
