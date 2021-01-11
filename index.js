@@ -4,6 +4,7 @@ var mouse;
 var grabbedElement = null;
 var caps = false;
 var secure = false;
+var mobile = false;
 
 const lerp = (x, y, a) => x * (1 - a) + y * a;
 const lerpSpeed = 0.005;
@@ -15,7 +16,7 @@ class draggableElement {
         this.number =  number;
         this.element = element;
         this.name = this.element.innerHTML;
-        this.hovering = false;
+        this.hovering = true;
         this.clicked = false;
         this.active = true;
         this.secure = false;
@@ -31,6 +32,8 @@ class draggableElement {
         this.element.addEventListener("mouseleave", this.LeavedDraggableObject.bind(this));
         this.element.addEventListener("mousedown", this.MouseDownObject.bind(this));
         window.addEventListener("mouseup", this.MouseUpObject.bind(this));
+        this.element.addEventListener("touchstart", this.MouseDownObject.bind(this));
+        window.addEventListener("touchend", this.MouseUpObject.bind(this));
         this.MouseMoveObject();
         window.addEventListener("resize", this.OnResize.bind(this));
     }
@@ -75,8 +78,14 @@ class draggableElement {
         if (this.clicked && this.active) {
             var boundingX = this.element.getBoundingClientRect().x;
             var boundingY = this.element.getBoundingClientRect().y;
-            this.element.style.top = "calc(" + lerp(boundingY, mouse.y - this.element.clientHeight / 2, lerpSpeed) + "px - 100%)"; //"calc(" + (mouse.y - this.element.clientHeight / 2) + "px - 100%)";
-            this.element.style.left = lerp(boundingX, mouse.x - this.element.clientWidth / 2, lerpSpeed) + "px"; //(mouse.x - this.element.clientWidth / 2) + "px";
+            if (mobile) {
+                this.element.style.top = "calc(" + lerp(boundingY, mouse.targetTouches[0].clientY - this.element.clientHeight / 2, lerpSpeed) + "px - 100%)";
+                this.element.style.left = lerp(boundingX, mouse.targetTouches[0].clientX - this.element.clientWidth / 2, lerpSpeed) + "px";
+            }
+            else {
+                this.element.style.top = "calc(" + lerp(boundingY, mouse.y - this.element.clientHeight / 2, lerpSpeed) + "px - 100%)";
+                this.element.style.left = lerp(boundingX, mouse.x - this.element.clientWidth / 2, lerpSpeed) + "px";
+            }
         }
         window.requestAnimationFrame(this.MouseMoveObject.bind(this));
     }
@@ -280,7 +289,9 @@ class draggedElement {
         this.element.addEventListener("mouseenter", this.EnteredDraggedObject.bind(this));
         this.element.addEventListener("mouseleave", this.LeavedDraggedObject.bind(this));
         this.element.addEventListener("mousedown", this.MouseDownObject.bind(this));
+        this.element.addEventListener("touchstart", this.MouseDownObject.bind(this));
         window.addEventListener("mouseup", this.MouseUpObject.bind(this));
+        window.addEventListener("touchend", this.MouseUpObject.bind(this));
     }
 
     EnteredDraggedObject() {
@@ -304,8 +315,6 @@ class draggedElement {
             var boundingY = grabbedElement.element.getBoundingClientRect().y + grabbedElement.element.clientHeight / 2;
             var thisBoundingX = this.rectX + this.element.clientWidth / 2;
             var thisBoundingY = this.rectY + this.element.clientHeight / 2;
-            console.log(Math.max(thisBoundingX, boundingX) - Math.min(boundingX, thisBoundingX));
-            console.log(Math.max(thisBoundingY, boundingY) - Math.min(boundingY, thisBoundingY));
             if (Math.max(thisBoundingX, boundingX) - Math.min(boundingX, thisBoundingX) > distance || Math.max(thisBoundingY, boundingY) - Math.min(boundingY, thisBoundingY) > distance) {
                 return 0;
             }
@@ -376,7 +385,6 @@ class draggedElement {
 }
 
 window.addEventListener("load", function() { setTimeout(Start, 100)});
-window.addEventListener("mousemove", function(event) {mouse = event;})
 
 function Start() {
     draggableObjects = document.getElementsByClassName("draggable");
@@ -389,6 +397,15 @@ function Start() {
     draggedObjects = [].slice.call(draggedObjects);
     for (var i = 0; i < draggedObjects.length; i++) {
         draggedObjects.splice(i, 1, new draggedElement(i, draggedObjects[i]));
+    }
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        window.addEventListener("touchstart", function(event) {mouse = event;});
+        window.addEventListener("touchmove", function(event) {mouse = event;});
+        mobile = true;
+    }
+    else {
+        window.addEventListener("mousemove", function(event) {mouse = event;});
     }
 }
 
